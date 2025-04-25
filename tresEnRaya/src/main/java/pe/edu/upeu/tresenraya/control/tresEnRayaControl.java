@@ -1,23 +1,36 @@
 package pe.edu.upeu.tresenraya.control;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.Callback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import pe.edu.upeu.tresenraya.modelo.TresEnRayaTO;
+import pe.edu.upeu.tresenraya.servicios.TresEnRayaServiciosI;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class    tresEnRayaControl {
     String jugador1;
     String jugador2;
-    int indexID = 1;
+    int indexID = -1;
     boolean circulo = true;
+    String ganador;
+    int partido;
+    String ganador_nombre;
+    int puntos_jugador1 = 0;
+    int puntos_jugador2 = 0;
 
-    //@Autowired
-    //tresEnRayaControl tresEnRayaControl;
+    @Autowired
+    TresEnRayaServiciosI serviciosI;
 
     @FXML
     Label label_turno;
@@ -100,6 +113,7 @@ public class    tresEnRayaControl {
     }
 
     private void btnIniciar() {
+        indexID = -1;
         jugador1 = txt_jugador1.getText();
         label_turno.setText(jugador1);
         jugador2 = txt_jugador2.getText();
@@ -113,11 +127,29 @@ public class    tresEnRayaControl {
         btn3_2.setDisable(false);
         btn3_3.setDisable(false);
         btn_iniciar.setDisable(true);
+        TresEnRayaTO to = new TresEnRayaTO();
+        to.setPartido(String.valueOf(partido+1));
+        to.setJugador1(jugador1);
+        to.setJugador2(jugador2);
+        to.setGanador(ganador_nombre);
+        to.setPuntos(puntos_jugador1);
+        to.setEstado("Jugando");
+        if(indexID!=-1){
+            serviciosI.update(to,indexID);
+        }else{
+            partido =partido+1;
+            serviciosI.save(to);
+            indexID = serviciosI.findAll().size()-1;
+
+        }
+        listar();
         //txt_jugador1.setText("");
         //txt_jugador2.setText("");
     }
 
     private void btnAnular() {
+        TresEnRayaTO to = new TresEnRayaTO();
+        serviciosI.update(to,indexID);
         btn1_1.setText("1");
         btn1_1.setStyle("-fx-text-fill: transparent;");
         btn1_2.setText("2");
@@ -138,6 +170,20 @@ public class    tresEnRayaControl {
         btn3_3.setStyle("-fx-text-fill: transparent;");
         initialize();
 
+        to.setPartido(String.valueOf(partido));
+        ganador_nombre ="";
+        to.setJugador1(jugador1);
+        to.setJugador2(jugador2);
+        to.setGanador(ganador_nombre);
+        to.setPuntos(puntos_jugador1);
+        to.setEstado("Anulado");
+        if(indexID!=-1){
+            serviciosI.update(to,indexID);
+        }else{
+            partido =partido+1;
+            serviciosI.save(to);
+        }
+        listar();
     }
 
     private void btn_1_1() {
@@ -153,8 +199,10 @@ public class    tresEnRayaControl {
             }
             if (label_turno.getText().equals(jugador1)) {
                 label_turno.setText(jugador2);
+                ganador_nombre = jugador1;
             } else if (label_turno.getText().equals(jugador2)) {
                 label_turno.setText(jugador1);
+                ganador_nombre = jugador2;
             }
             ganar();
         }
@@ -172,8 +220,10 @@ public class    tresEnRayaControl {
             }
             if (label_turno.getText().equals(jugador1)) {
                 label_turno.setText(jugador2);
+                ganador_nombre = jugador1;
             } else if (label_turno.getText().equals(jugador2)) {
                 label_turno.setText(jugador1);
+                ganador_nombre = jugador2;
             }
             ganar();
         }
@@ -191,8 +241,10 @@ public class    tresEnRayaControl {
             }
             if (label_turno.getText().equals(jugador1)) {
                 label_turno.setText(jugador2);
+                ganador_nombre = jugador1;
             } else if (label_turno.getText().equals(jugador2)) {
                 label_turno.setText(jugador1);
+                ganador_nombre = jugador2;
             }
             ganar();
         }
@@ -210,8 +262,10 @@ public class    tresEnRayaControl {
             }
             if (label_turno.getText().equals(jugador1)) {
                 label_turno.setText(jugador2);
+                ganador_nombre = jugador1;
             } else if (label_turno.getText().equals(jugador2)) {
                 label_turno.setText(jugador1);
+                ganador_nombre = jugador2;
             }
             ganar();
         }
@@ -229,8 +283,10 @@ public class    tresEnRayaControl {
             }
             if (label_turno.getText().equals(jugador1)) {
                 label_turno.setText(jugador2);
+                ganador_nombre = jugador1;
             } else if (label_turno.getText().equals(jugador2)) {
                 label_turno.setText(jugador1);
+                ganador_nombre = jugador2;
             }
             ganar();
         }
@@ -248,8 +304,10 @@ public class    tresEnRayaControl {
             }
             if (label_turno.getText().equals(jugador1)) {
                 label_turno.setText(jugador2);
+                ganador_nombre = jugador1;
             } else if (label_turno.getText().equals(jugador2)) {
                 label_turno.setText(jugador1);
+                ganador_nombre = jugador2;
             }
             ganar();
         }
@@ -267,8 +325,10 @@ public class    tresEnRayaControl {
             }
             if (label_turno.getText().equals(jugador1)) {
                 label_turno.setText(jugador2);
+                ganador_nombre = jugador1;
             } else if (label_turno.getText().equals(jugador2)) {
                 label_turno.setText(jugador1);
+                ganador_nombre = jugador2;
             }
             ganar();
         }
@@ -286,8 +346,10 @@ public class    tresEnRayaControl {
             }
             if (label_turno.getText().equals(jugador1)) {
                 label_turno.setText(jugador2);
+                ganador_nombre = jugador1;
             } else if (label_turno.getText().equals(jugador2)) {
                 label_turno.setText(jugador1);
+                ganador_nombre = jugador2;
             }
             ganar();
         }
@@ -305,34 +367,89 @@ public class    tresEnRayaControl {
             }
             if (label_turno.getText().equals(jugador1)) {
                 label_turno.setText(jugador2);
+                ganador_nombre = jugador1;
             } else if (label_turno.getText().equals(jugador2)) {
                 label_turno.setText(jugador1);
+                ganador_nombre = jugador2;
             }
             ganar();
         }
     }
     private void ganar(){
+        String gan = ganador_nombre;
             if (btn1_1.getText().equals(btn1_2.getText()) && btn1_2.getText().equals(btn1_3.getText())) {
-                label_turno.setText("Ganador");
+                ganador ="1";
+
             } else if (btn2_1.getText().equals(btn2_2.getText()) && btn2_2.getText().equals(btn2_3.getText())) {
-                label_turno.setText("Ganador");
+                ganador ="1";
+
             } else if (btn3_1.getText().equals(btn3_2.getText()) && btn3_2.getText().equals(btn3_3.getText())) {
-                label_turno.setText("Ganador");
+                ganador ="1";
+
             } else if (btn1_1.getText().equals(btn2_1.getText()) && btn2_1.getText().equals(btn3_1.getText())) {
-                label_turno.setText("Ganador");
+                ganador ="1";
+
             } else if (btn1_2.getText().equals(btn2_2.getText()) && btn2_2.getText().equals(btn3_2.getText())) {
-                label_turno.setText("Ganador");
+                ganador ="1";
+
             } else if (btn1_3.getText().equals(btn2_3.getText()) && btn2_3.getText().equals(btn3_3.getText())) {
-                label_turno.setText("Ganador");
+                ganador ="1";
+
             } else if (btn1_1.getText().equals(btn2_2.getText()) && btn2_2.getText().equals(btn3_3.getText())) {
-                label_turno.setText("Ganador");
+                ganador ="1";
+
             } else if (btn1_3.getText().equals(btn2_2.getText()) && btn2_2.getText().equals(btn3_1.getText())) {
-                label_turno.setText("Ganador");
+                ganador ="1";
+
             }
+            else{
+                ganador = "0";
+            }
+        if (ganador.equals("1")) {
+            btnAnular();
+            TresEnRayaTO to = new TresEnRayaTO();
+            to.setPartido(String.valueOf(partido));
+            to.setJugador1(jugador1);
+            to.setJugador2(jugador2);
+            to.setGanador(gan);
+            to.setPuntos(puntos_jugador1+1);
+            to.setEstado("Terminado");
+            if(indexID!=-1){
+                serviciosI.update(to,indexID);
+                System.out.println(ganador_nombre);
+            }else{
+                serviciosI.save(to);
+            }
+            listar();
+        }
 
 
     }
 
+    public void  listar() {
+
+        lista = serviciosI.findAll();
+
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        partidox.setCellValueFactory(new PropertyValueFactory<TresEnRayaTO, String>("partido"));
+        partidox.setCellFactory(TextFieldTableCell.<TresEnRayaTO>forTableColumn());
+
+        jugador1x.setCellValueFactory(new PropertyValueFactory<TresEnRayaTO, String>("jugador1"));
+        jugador1x.setCellFactory(TextFieldTableCell.<TresEnRayaTO>forTableColumn());
+
+        jugador2x.setCellValueFactory(new PropertyValueFactory<>("jugador2"));
+        jugador2x.setCellFactory(TextFieldTableCell.<TresEnRayaTO>forTableColumn());
+
+        ganadorx.setCellValueFactory(new PropertyValueFactory<>("ganador"));
+        ganadorx.setCellFactory(TextFieldTableCell.<TresEnRayaTO>forTableColumn());
+
+        estadox.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        estadox.setCellFactory(TextFieldTableCell.<TresEnRayaTO>forTableColumn());
+
+        datos = FXCollections.observableArrayList(lista);
+        tableView.setItems(datos);
+    }
     @FXML
     private void controlClick(ActionEvent event) {
         Button boton = (Button) event.getSource();
@@ -348,6 +465,7 @@ public class    tresEnRayaControl {
                 break;
             case "btn_anular":
                 btnAnular();
+                System.out.println("HOla");
                 break;
             case "btn1_1":
                 btn_1_1();
